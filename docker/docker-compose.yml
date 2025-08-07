@@ -1,0 +1,100 @@
+# docker-compose.yml - Complete production environment
+
+
+services:
+  # Your main HFT system
+  hft-system:
+    build: .
+    container_name: hft-production
+    environment:
+      - PYTHONUNBUFFERED=1
+      - TZ=America/New_York
+      - HFT_MODE=production
+      - LOG_LEVEL=INFO
+    volumes:
+      # Mount these directories so you can access files from host
+      - ./logs:/app/logs
+      - ./reports:/app/reports  
+      - ./data:/app/data
+      - ./backups:/app/backups
+      # IMPORTANT: Mount source code for live editing
+      - .:/app
+    ports:
+      - "8080:8080"  # For future web interface
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import yfinance as yf; yf.Ticker('AAPL').info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+    networks:
+      - hft-network
+
+  # Redis for caching market data (optional but useful)
+  redis:
+    image: redis:7-alpine
+    container_name: hft-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    networks:
+      - hft-network
+
+  # Monitoring with Prometheus (collects metrics)
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: hft-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - hft-network
+
+  # Grafana for beautiful dashboards
+  grafana:
+    image: grafana/grafana:latest
+    container_name: hft-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=hft123
+      - GF_USERS_ALLOW_SIGN_UP=false
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/datasources:/etc/grafana/provisioning/datasources
+    restart: unless-stopped
+    networks:
+      - hft-network
+
+volumes:
+  redis_data:
+  prometheus_data:  
+  grafana_data:
+
+networks:
+  hft-network:
+    driver: bridge
