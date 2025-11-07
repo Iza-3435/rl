@@ -1,10 +1,13 @@
 """Main orchestrator for production HFT system."""
 
+import time
 from typing import List, Optional
 from datetime import datetime
 
 from src.core.config import ConfigManager
-from src.core.logging_config import get_logger
+from src.core.logging_config import get_logger, LogLevel
+from src.core.terminal_formatter import TerminalFormatter
+from src.core.trade_logger import get_trade_logger
 from src.infra.phase1_manager import Phase1Manager
 from src.ml.phase2_manager import Phase2Manager
 from src.execution.phase3_manager import Phase3Manager
@@ -26,23 +29,59 @@ class HFTSystemOrchestrator:
         self.phase3: Optional[Phase3Manager] = None
         self.pipeline: Optional[ProductionExecutionPipeline] = None
 
+        self.formatter = TerminalFormatter(use_colors=True)
+        self.trade_logger = get_trade_logger()
         self.state = "initializing"
+        self.duration_seconds = 0
 
     async def initialize(self):
         """Initialize all system components."""
-        logger.info("Initializing HFT production system")
+        # Print banner (unless quiet mode)
+        if logger._level != LogLevel.QUIET:
+            print(
+                self.formatter.banner(
+                    mode=self.config.system.mode.value,
+                    duration=self.duration_seconds,
+                    symbols=len(self.config.trading.symbols),
+                )
+            )
 
         try:
+            # Phase 1
+            start = time.time()
+            if logger._level not in (LogLevel.QUIET, LogLevel.NORMAL):
+                print(self.formatter.phase_start("Phase 1", "Market data & network"))
             await self._init_phase1()
+            if logger._level not in (LogLevel.QUIET, LogLevel.NORMAL):
+                print(self.formatter.phase_complete("Phase 1", (time.time() - start) * 1000))
+
+            # Phase 2
+            start = time.time()
+            if logger._level not in (LogLevel.QUIET, LogLevel.NORMAL):
+                print(self.formatter.phase_start("Phase 2", "ML models & routing"))
             await self._init_phase2()
+            if logger._level not in (LogLevel.QUIET, LogLevel.NORMAL):
+                print(self.formatter.phase_complete("Phase 2", (time.time() - start) * 1000))
+
+            # Phase 3
+            start = time.time()
+            if logger._level not in (LogLevel.QUIET, LogLevel.NORMAL):
+                print(self.formatter.phase_start("Phase 3", "Execution & risk"))
             await self._init_phase3()
+            if logger._level not in (LogLevel.QUIET, LogLevel.NORMAL):
+                print(self.formatter.phase_complete("Phase 3", (time.time() - start) * 1000))
+
+            # Pipeline
             await self._create_pipeline()
 
             self.state = "ready"
-            logger.info("System initialization complete")
+
+            # Show system ready message
+            if logger._level != LogLevel.QUIET:
+                print(self.formatter.system_ready())
 
         except Exception as e:
-            logger.error(f"System initialization failed: {e}")
+            print(self.formatter.error(f"System initialization failed: {e}"))
             self.state = "failed"
             raise
 
@@ -81,29 +120,33 @@ class HFTSystemOrchestrator:
         if self.state != "ready":
             raise RuntimeError(f"System not ready: {self.state}")
 
-        logger.info(f"Starting production trading run", duration_s=duration_seconds)
+        self.duration_seconds = duration_seconds
 
         start_time = datetime.now()
         await self.pipeline.start(duration_seconds)
         elapsed = (datetime.now() - start_time).total_seconds()
 
+        # Get metrics and show summary
         metrics = self.pipeline.get_metrics()
-        logger.info(
-            "Trading run complete",
-            duration_s=elapsed,
-            ticks=metrics["ticks_processed"],
-            trades=metrics["trades_executed"],
-            pnl=f"${metrics['total_pnl']:,.2f}",
-        )
+        trade_stats = self.trade_logger.get_summary_stats()
+
+        if logger._level != LogLevel.QUIET:
+            print(
+                self.formatter.summary(
+                    duration=elapsed,
+                    trades=trade_stats["trade_count"],
+                    total_pnl=trade_stats["total_pnl"],
+                    win_rate=trade_stats["win_rate"],
+                    sharpe=metrics.get("sharpe_ratio"),
+                    max_dd=metrics.get("max_drawdown"),
+                )
+            )
 
         return metrics
 
     async def shutdown(self):
         """Shutdown system gracefully."""
-        logger.info("Shutting down HFT system")
-
         if self.pipeline and self.pipeline.is_running:
             await self.pipeline.stop()
 
         self.state = "shutdown"
-        logger.info("System shutdown complete")

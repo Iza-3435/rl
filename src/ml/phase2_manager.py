@@ -22,14 +22,14 @@ class Phase2Manager:
 
     async def initialize(self, phase1_components: dict):
         """Initialize Phase 2 ML components."""
-        logger.info("Initializing ML prediction and routing")
+        logger.debug("Initializing ML prediction and routing")
 
         try:
             await self._init_prediction_models()
             await self._init_routing(phase1_components)
             await self._init_learning_systems()
 
-            logger.info("Phase 2 initialization complete")
+            logger.debug("Phase 2 initialization complete")
         except Exception as e:
             logger.error(f"Phase 2 initialization failed: {e}")
             raise
