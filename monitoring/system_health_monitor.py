@@ -83,8 +83,8 @@ class CrossVenuePriceValidator:
         # Alert callbacks
         self.alert_callbacks = []
         
-        print(f"💰 Cross-Venue Price Validator initialized")
-        print(f"📊 Monitoring {len(venues)} venues with {tolerance_pct}% tolerance")
+        logger.debug(f" Cross-Venue Price Validator initialized")
+        logger.info(f" Monitoring {len(venues)} venues with {tolerance_pct}% tolerance")
 
     def update_price(self, symbol: str, venue: str, price: float, timestamp: float = None):
         """Update price data and check for anomalies"""
@@ -361,8 +361,8 @@ class SystemHealthMonitor:
         
         self._register_default_health_checkers()
         
-        print("🏥 System Health Monitor initialized")
-        print(f"⚡ Monitoring every {monitoring_interval_seconds}s")
+        logger.debug(" System Health Monitor initialized")
+        logger.info(f" Monitoring every {monitoring_interval_seconds}s")
 
     def _register_default_health_checkers(self):
         """Register default health check functions"""
@@ -377,20 +377,20 @@ class SystemHealthMonitor:
     def start_monitoring(self):
         """Start continuous health monitoring"""
         if self.is_monitoring:
-            print("⚠️ Health monitoring already running")
+            logger.info("️ Health monitoring already running")
             return
         
         self.is_monitoring = True
         self.monitor_thread = threading.Thread(target=self._monitoring_loop, daemon=True)
         self.monitor_thread.start()
-        print("✅ System health monitoring started")
+        logger.info(" System health monitoring started")
 
     def stop_monitoring(self):
         """Stop health monitoring"""
         self.is_monitoring = False
         if self.monitor_thread:
             self.monitor_thread.join(timeout=1.0)
-        print("🛑 System health monitoring stopped")
+        logger.info(" System health monitoring stopped")
 
     def _monitoring_loop(self):
         """Main monitoring loop"""
@@ -663,21 +663,21 @@ def create_monitoring_system(venues: List[str]) -> Tuple[CrossVenuePriceValidato
     
     # Set up alert callbacks
     def print_price_alert(alert: PriceAnomalyAlert):
-        level_emoji = {"info": "ℹ️", "warning": "⚠️", "critical": "🚨", "emergency": "💥"}
-        emoji = level_emoji.get(alert.alert_level.value, "⚠️")
+        level_emoji = {"info": "ℹ️", "warning": "️", "critical": "", "emergency": ""}
+        emoji = level_emoji.get(alert.alert_level.value, "️")
         
-        print(f"{emoji} PRICE ALERT: {alert.anomaly_type.upper()} - {alert.symbol} on {alert.venue}")
-        print(f"    Current: ${alert.current_price:.4f} | Expected: ${alert.expected_price:.4f}")
-        print(f"    Deviation: {alert.deviation_pct:.2f}% | Action: {alert.suggested_action}")
+        logger.info(f"{emoji} PRICE ALERT: {alert.anomaly_type.upper()} - {alert.symbol} on {alert.venue}")
+        logger.info(f"    Current: ${alert.current_price:.4f} | Expected: ${alert.expected_price:.4f}")
+        logger.info(f"    Deviation: {alert.deviation_pct:.2f}% | Action: {alert.suggested_action}")
     
     def print_health_alert(alert: HealthAlert):
-        level_emoji = {"info": "ℹ️", "warning": "⚠️", "critical": "🚨", "emergency": "💥"}
-        emoji = level_emoji.get(alert.level.value, "⚠️")
+        level_emoji = {"info": "ℹ️", "warning": "️", "critical": "", "emergency": ""}
+        emoji = level_emoji.get(alert.level.value, "️")
         
-        print(f"{emoji} HEALTH ALERT: {alert.component.value.upper()}")
-        print(f"    {alert.message}")
-        print(f"    Current: {alert.current_value:.2f} | Expected: {alert.expected_range}")
-        print(f"    Action: {alert.suggested_action}")
+        logger.info(f"{emoji} HEALTH ALERT: {alert.component.value.upper()}")
+        logger.info(f"    {alert.message}")
+        logger.info(f"    Current: {alert.current_value:.2f} | Expected: {alert.expected_range}")
+        logger.info(f"    Action: {alert.suggested_action}")
     
     price_validator.add_alert_callback(print_price_alert)
     health_monitor.add_health_alert_callback(print_health_alert)
@@ -707,14 +707,14 @@ def integrate_monitoring_with_trading_system(trading_system, price_validator: Cr
     # Start monitoring
     health_monitor.start_monitoring()
     
-    print("✅ Monitoring system integrated with trading system")
+    logger.info(" Monitoring system integrated with trading system")
 
 
 if __name__ == "__main__":
     # Test the monitoring system
     venues = ['NYSE', 'NASDAQ', 'CBOE', 'IEX', 'ARCA']
     
-    print("🧪 Testing System Health & Price Validation...")
+    logger.info(" Testing System Health & Price Validation...")
     
     price_validator, health_monitor = create_monitoring_system(venues)
     
@@ -745,10 +745,10 @@ if __name__ == "__main__":
     health_summary = health_monitor.get_system_health_summary()
     venue_stats = price_validator.get_venue_reliability_stats()
     
-    print(f"\n📊 System Health Score: {health_summary['overall_health_score']:.1f}%")
-    print("📈 Venue Reliability:")
+    logger.info(f"\n System Health Score: {health_summary['overall_health_score']:.1f}%")
+    logger.info(" Venue Reliability:")
     for venue, stats in venue_stats.items():
-        print(f"  {venue}: {stats['reliability_score']:.1f}% (Anomalies: {stats['recent_anomalies']})")
+        logger.info(f"  {venue}: {stats['reliability_score']:.1f}% (Anomalies: {stats['recent_anomalies']})")
     
     health_monitor.stop_monitoring()
-    print("✅ Monitoring system test complete!")
+    logger.debug(" Monitoring system test complete!")
