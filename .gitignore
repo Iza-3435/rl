@@ -68,6 +68,9 @@ models/saved/
 # Reports
 reports/
 backtest_results/
+*_report_*.json
+complete_backtest_data_*.json
+latency_model_*.pt
 
 # Secrets
 .env
