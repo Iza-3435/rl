@@ -37,16 +37,10 @@ class Phase3Manager:
 
     async def _init_trading_simulator(self):
         """Initialize trading simulator with enhanced features."""
-        from simulator.trading_simulator_integration import create_enhanced_trading_simulator
+        from src.execution.trading_engine import ProductionTradingEngine
 
-        self.trading_simulator = create_enhanced_trading_simulator(
-            symbols=self.symbols,
-            venues=list(self.venues.keys()),
-            config={
-                "enable_latency_simulation": True,
-                "venue_optimization": True,
-                "strategy_latency_optimization": True,
-            },
+        self.trading_simulator = ProductionTradingEngine(
+            symbols=self.symbols, venues=list(self.venues.keys())
         )
 
         await self._integrate_cost_model()
@@ -66,11 +60,10 @@ class Phase3Manager:
 
     async def _init_risk_management(self):
         """Initialize risk management system."""
-        from engine.risk_management_engine import create_integrated_risk_system
+        from src.risk.risk_manager import ProductionRiskManager
 
-        risk_system = create_integrated_risk_system()
-        self.risk_manager = risk_system["risk_manager"]
-        self.pnl_attribution = risk_system["pnl_attribution"]
+        self.risk_manager = ProductionRiskManager()
+        self.pnl_attribution = None
 
         logger.verbose("Risk management initialized")
 
