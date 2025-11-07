@@ -1,4 +1,3 @@
-
 # Python
 __pycache__/
 *.py[cod]
@@ -17,228 +16,73 @@ parts/
 sdist/
 var/
 wheels/
-share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# poetry
-poetry.lock
-
-# pdm
-.pdm.toml
-
-# PEP 582
-__pypackages__/
-
-# Celery
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
+# Virtual environments
 venv/
+env/
 ENV/
-env.bak/
-venv.bak/
+.venv
 
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# HFT-Specific Files
-# ===================
-
-# Trading data and logs
-data/raw/
-data/processed/
-data/backtest/
-data/live/
-logs/
-*.log
-*.csv.gz
-*.parquet
-*.h5
-*.hdf5
-
-# Model artifacts
-models/trained/
-models/checkpoints/
-*.pkl
-*.joblib
-*.model
-*.weights
-*.h5
-*.onnx
-*.pt
-*.pth
-
-# Configuration files with sensitive data
-config/production.yaml
-config/live.yaml
-config/api_keys.yaml
-.secrets/
-secrets/
-
-# API keys and credentials
-*.key
-*.pem
-*.crt
-*_key.json
-*_credentials.json
-api_keys.txt
-.env.local
-.env.production
-
-# Trading reports and analysis
-reports/
-backtests/
-*.html
-phase3_complete_report_*.json
-comprehensive_backtest_report_*.html
-historical_backtest_*.html
-monte_carlo_analysis_*.html
-stress_test_report_*.html
-complete_backtest_data_*.json
-
-# Performance data
-performance/
-metrics/
-profiling/
-
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-
-# Market data feeds
-market_data/
-tick_data/
-order_books/
-*.csv
-*.json.gz
-
-# Temporary files
-tmp/
-temp/
-*.tmp
-*.temp
-*.swp
-*.swo
-*~
-
-# Network latency measurements
-latency_measurements/
-network_logs/
-ping_results/
-
-# ML experiment tracking
-mlruns/
-wandb/
-.neptune/
-experiments/
-
-# Risk management alerts
-alerts/
-risk_logs/
-emergency_stops/
-
-# Backup files
-backup/
-*.bak
-*.backup
-
-# IDE and Editor files
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 .DS_Store
-Thumbs.db
 
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.hypothesis/
 
-# Large files that shouldn't be committed
-*.zip
-*.tar.gz
-*.rar
-*.7z
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
 
-# Simulation results
-simulation_results/
-trade_history/
-pnl_history/
+# Logs
+*.log
+logs/
+*.out
 
-# Documentation build
-docs/_build/
-docs/build/
+# Data
+data/
+*.csv
+*.pkl
+*.pickle
+*.h5
+*.hdf5
+
+# Models
+models/saved/
+*.pt
+*.pth
+*.ckpt
+
+# Reports
+reports/
+backtest_results/
+
+# Secrets
+.env
+*.key
+*.pem
+credentials.json
+
+# Docker
+.dockerignore
+
+# Monitoring
+prometheus_data/
+grafana_data/
+
+# Temporary
+tmp/
+temp/
+*.tmp
