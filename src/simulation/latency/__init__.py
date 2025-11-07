@@ -1,17 +1,4 @@
-"""Latency simulation system.
-
-NOTE: Full refactor in progress. Currently imports from legacy file.
-Target: Break 1,364 LOC into 6-8 modules of <200 LOC each.
-
-Completed modules:
-- types.py: Core types and dataclasses (89 LOC)
-- message_queue.py: Queue simulation (67 LOC)
-
-Pending refactor:
-- LatencySimulator (605 LOC) -> Split into 3 modules
-- EnhancedOrderExecutionEngine (438 LOC) -> Split into 2 modules
-- LatencyAnalytics (140 LOC) -> Keep as module
-"""
+"""Latency simulation system."""
 
 from .types import (
     LatencyComponent,
@@ -20,10 +7,14 @@ from .types import (
     VenueLatencyProfile,
 )
 from .message_queue import MessageQueue
+from .venue_config import initialize_venue_profiles, initialize_message_queues
+from .market_factors import MarketFactorCalculator
+from .latency_calculator import LatencyCalculator
+from .simulator import LatencySimulator
+from .statistics import LatencyStatistics
 
 try:
     from simulator.enhanced_latency_simulation import (
-        LatencySimulator,
         EnhancedOrderExecutionEngine,
         LatencyAnalytics,
     )
@@ -36,7 +27,12 @@ __all__ = [
     "LatencyBreakdown",
     "VenueLatencyProfile",
     "MessageQueue",
+    "initialize_venue_profiles",
+    "initialize_message_queues",
+    "MarketFactorCalculator",
+    "LatencyCalculator",
     "LatencySimulator",
+    "LatencyStatistics",
     "EnhancedOrderExecutionEngine",
     "LatencyAnalytics",
 ]
