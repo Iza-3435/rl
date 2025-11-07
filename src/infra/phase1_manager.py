@@ -25,7 +25,7 @@ class Phase1Manager:
 
     async def initialize(self):
         """Initialize Phase 1 components."""
-        logger.info("Initializing market data and network infrastructure")
+        logger.debug("Initializing market data and network infrastructure")
 
         try:
             await self._init_market_data()
@@ -34,7 +34,7 @@ class Phase1Manager:
             await self._init_features()
             await self._init_tracking()
 
-            logger.info("Phase 1 initialization complete")
+            logger.debug("Phase 1 initialization complete")
         except Exception as e:
             logger.error(f"Phase 1 initialization failed: {e}")
             raise

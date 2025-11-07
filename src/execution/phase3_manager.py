@@ -23,14 +23,14 @@ class Phase3Manager:
 
     async def initialize(self):
         """Initialize Phase 3 trading components."""
-        logger.info("Initializing trading execution and risk management")
+        logger.debug("Initializing trading execution and risk management")
 
         try:
             await self._init_trading_simulator()
             await self._init_risk_management()
             await self._init_backtesting()
 
-            logger.info("Phase 3 initialization complete")
+            logger.debug("Phase 3 initialization complete")
         except Exception as e:
             logger.error(f"Phase 3 initialization failed: {e}")
             raise

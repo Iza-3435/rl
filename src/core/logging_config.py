@@ -70,6 +70,9 @@ class ProductionLogger:
 
     def info(self, msg: str, **kwargs):
         """Log info message."""
+        # Suppress info logs in QUIET mode
+        if self._level == LogLevel.QUIET:
+            return
         if kwargs:
             msg = f"{msg} | {self._format_kwargs(kwargs)}"
         self.logger.info(msg)
