@@ -51,7 +51,8 @@ async def main():
     log_level = LogLevel[args.log_level.upper()]
     logger.set_level(log_level)
 
-    logger.info("HFT Network Optimizer starting")
+    # Startup message suppressed (shown via banner instead)
+    logger.debug("HFT Network Optimizer starting")
     logger.verbose("Arguments", **vars(args))
 
     try:
