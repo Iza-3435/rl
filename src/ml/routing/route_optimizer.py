@@ -2,7 +2,7 @@
 
 from typing import Dict, List, Optional
 from src.core.logging_config import get_logger
-from models.rl_route_optimizer import RoutingEnvironment
+from .routing_manager import RoutingEnvironment
 
 logger = get_logger()
 
