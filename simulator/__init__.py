@@ -1,5 +1,11 @@
 """Trading simulator package."""
 
+from src.simulator.enhanced_trading import (
+    EnhancedTradingSimulator,
+    create_enhanced_trading_simulator,
+    patch_existing_simulator,
+    quick_latency_test,
+)
 from src.simulator.trading import (
     ArbitrageStrategy,
     Fill,
@@ -34,6 +40,10 @@ __all__ = [
     "ArbitrageStrategy",
     "MomentumStrategy",
     "TradingSimulator",
+    "EnhancedTradingSimulator",
     "calculate_pnl_attribution",
     "calculate_latency_costs",
+    "create_enhanced_trading_simulator",
+    "patch_existing_simulator",
+    "quick_latency_test",
 ]
