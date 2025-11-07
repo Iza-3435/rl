@@ -1,18 +1,24 @@
 """System integration components."""
 
 from .phase3 import (
-    ProductionExecutionPipeline,
-    IntegratedMLPredictor,
+    AnalyticsGenerator,
+    BacktestingEngine,
     ComponentInitializer,
-    TrainingManager,
     EXPANDED_STOCK_LIST,
+    IntegratedMLPredictor,
+    Phase3CompleteIntegration,
+    ProductionExecutionPipeline,
+    ReportGenerator,
+    RiskMonitor,
+    SimulationRunner,
+    TradeExecutor,
+    TrainingManager,
+    cleanup_all_sessions,
+    configure_logging,
+    get_risk_limits,
+    get_training_config,
     get_venue_configs,
 )
-
-try:
-    from integration.phase3_complete_integration import Phase3CompleteIntegration
-except ImportError:
-    pass
 
 __all__ = [
     "Phase3CompleteIntegration",
@@ -20,6 +26,16 @@ __all__ = [
     "IntegratedMLPredictor",
     "ComponentInitializer",
     "TrainingManager",
+    "SimulationRunner",
+    "TradeExecutor",
+    "RiskMonitor",
+    "AnalyticsGenerator",
+    "BacktestingEngine",
+    "ReportGenerator",
     "EXPANDED_STOCK_LIST",
     "get_venue_configs",
+    "get_training_config",
+    "get_risk_limits",
+    "configure_logging",
+    "cleanup_all_sessions",
 ]
