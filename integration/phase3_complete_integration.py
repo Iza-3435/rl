@@ -252,7 +252,7 @@ class Phase3CompleteIntegration:
         try:
             from data.latency_predictor import LatencyPredictor
             from models.ensemble_latency_model import EnsembleLatencyModel
-            from models.rl_route_optimizer import RoutingEnvironment
+            from src.ml.routing import RoutingEnvironment
             from data.logs.market_regime_detector import MarketRegimeDetector, OnlineLearner
         except ImportError:
             # Fallback to stubs if actual components not available
