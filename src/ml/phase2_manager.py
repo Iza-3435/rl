@@ -37,14 +37,13 @@ class Phase2Manager:
     async def _init_prediction_models(self):
         """Initialize latency prediction models."""
         try:
-            from src.ml.predictors.latency_predictor import ProductionLatencyPredictor
+            from src.ml.predictors.latency_predictor_v2 import LatencyPredictor
 
             venue_list = list(self.venues.keys())
-            self.latency_predictor = ProductionLatencyPredictor(venue_list)
+            self.latency_predictor = LatencyPredictor(venue_list)
             self.ensemble_model = None
 
-            self._configure_model_params()
-            logger.verbose("Latency prediction models initialized")
+            logger.verbose("Latency prediction models initialized (native)")
 
         except ImportError as e:
             logger.warning(f"ML models not available: {e}")
@@ -52,19 +51,7 @@ class Phase2Manager:
 
     def _configure_model_params(self):
         """Configure model parameters based on trading mode."""
-        params = {
-            TradingMode.FAST: {"sequence_length": 10, "update_threshold": 10},
-            TradingMode.BALANCED: {"sequence_length": 30, "update_threshold": 25},
-            TradingMode.PRODUCTION: {"sequence_length": 50, "update_threshold": 100},
-        }
-
-        config = params.get(self.mode, params[TradingMode.PRODUCTION])
-
-        if hasattr(self.latency_predictor, "sequence_length"):
-            self.latency_predictor.sequence_length = config["sequence_length"]
-            self.latency_predictor.update_threshold = config["update_threshold"]
-
-        logger.verbose(f"Model parameters configured for {self.mode.value}", **config)
+        logger.verbose(f"Using production ML configuration for {self.mode.value}")
 
     async def _init_routing(self, phase1_components: dict):
         """Initialize RL routing environment."""
