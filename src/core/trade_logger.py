@@ -24,6 +24,11 @@ class TradeLogger:
             print(self.formatter.trade_header())
             self.header_printed = True
 
+    def print_footer(self):
+        """Print trade table footer."""
+        if self.header_printed and self.logger._level != LogLevel.QUIET:
+            print(self.formatter.trade_footer())
+
     def log_trade(
         self,
         symbol: str,

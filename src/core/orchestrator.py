@@ -131,6 +131,10 @@ class HFTSystemOrchestrator:
         trade_stats = self.trade_logger.get_summary_stats()
 
         if logger._level != LogLevel.QUIET:
+            # Close trade table if header was printed
+            self.trade_logger.print_footer()
+
+            # Show summary
             print(
                 self.formatter.summary(
                     duration=elapsed,
