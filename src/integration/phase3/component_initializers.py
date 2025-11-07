@@ -20,7 +20,7 @@ class ComponentInitializer:
 
     async def initialize_phase1(self) -> Dict[str, Any]:
         """Initialize Phase 1: Market Data & Network Infrastructure."""
-        logger.info("🔧 Initializing Phase 1: Market Data & Network Infrastructure")
+        logger.info(" Initializing Phase 1: Market Data & Network Infrastructure")
 
         from simulator.network_latency_simulator import NetworkLatencySimulator
         from simulator.order_book_manager import OrderBookManager
@@ -30,9 +30,9 @@ class ComponentInitializer:
         market_generator = UltraRealisticMarketDataGenerator(self.symbols, mode=self.mode)
         market_generator.venues = self.venues
 
-        logger.info(f"🚀 ENHANCED TICK GENERATION ACTIVE:")
+        logger.info(f" TICK GENERATION ACTIVE:")
         logger.info(f"   Mode: {market_generator.mode}")
-        logger.info(f"   Target Rate: {market_generator.target_ticks_per_minute} ticks/min")
+        logger.debug(f"   Target Rate: {market_generator.target_ticks_per_minute} ticks/min")
         logger.info(f"   Base Interval: {market_generator.base_update_interval:.3f}s")
         logger.info(f"   Optimized Symbols: {len(market_generator.symbols)}")
 
@@ -41,7 +41,7 @@ class ComponentInitializer:
         feature_extractor = FeatureExtractor(self.symbols, self.venues)
         performance_tracker = PerformanceTracker()
 
-        logger.info("✅ Phase 1 initialization complete")
+        logger.info(" Phase 1 initialization complete")
 
         return {
             "market_generator": market_generator,
@@ -53,7 +53,7 @@ class ComponentInitializer:
 
     async def initialize_phase2(self, phase1_components: Dict[str, Any]) -> Dict[str, Any]:
         """Initialize Phase 2: ML Latency Prediction & Routing."""
-        logger.info("🧠 Initializing Phase 2: ML Latency Prediction & Routing")
+        logger.info(" Initializing Phase 2: ML Latency Prediction & Routing")
 
         try:
             from data.latency_predictor import LatencyPredictor
@@ -95,7 +95,7 @@ class ComponentInitializer:
             }
         )
 
-        logger.info("✅ Phase 2 initialization complete")
+        logger.info(" Phase 2 initialization complete")
 
         return {
             "latency_predictor": latency_predictor,
@@ -107,7 +107,7 @@ class ComponentInitializer:
 
     async def initialize_phase3(self) -> Dict[str, Any]:
         """Initialize Phase 3: Trading & Risk Management."""
-        logger.info("📈 Initializing Phase 3: Trading & Risk Management")
+        logger.info(" Initializing Phase 3: Trading & Risk Management")
 
         from simulator.trading_simulator import TradingSimulator
         from engine.risk_management_engine import (
@@ -137,9 +137,9 @@ class ComponentInitializer:
             )
 
             trading_simulator = integrate_enhanced_cost_model(trading_simulator)
-            logger.info("✅ Enhanced execution cost modeling integrated")
+            logger.info(" Enhanced execution cost modeling integrated")
         except ImportError:
-            logger.warning("⚠️ Using basic cost modeling")
+            logger.warning("️ Using basic cost modeling")
 
         risk_system = create_integrated_risk_system()
         risk_manager = risk_system["risk_manager"]
@@ -154,7 +154,7 @@ class ComponentInitializer:
         )
         backtesting_engine = BacktestingEngine(backtest_config)
 
-        logger.info("✅ Phase 3 initialization complete")
+        logger.info(" Phase 3 initialization complete")
 
         return {
             "trading_simulator": trading_simulator,
@@ -172,7 +172,7 @@ class ComponentInitializer:
                 RealTimePerformanceAnalyzer,
             )
 
-            logger.info("📊 Initializing Enhanced Analytics (FREE Performance Boost)...")
+            logger.info(" Initializing Enhanced Analytics (FREE Performance Boost)...")
 
             technical_engine = AdvancedTechnicalEngine()
             price_validator, health_monitor = create_monitoring_system(list(self.venues.keys()))
@@ -181,7 +181,7 @@ class ComponentInitializer:
             health_monitor.start_monitoring()
             performance_analyzer.start_continuous_analysis()
 
-            logger.info("✅ Enhanced analytics monitoring started")
+            logger.info(" Enhanced analytics monitoring started")
 
             return {
                 "technical_engine": technical_engine,

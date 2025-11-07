@@ -49,16 +49,16 @@ class TrainingManager:
             await self._train_latency_models(training_data)
             await self._train_routing_models()
             await self._train_regime_detection(training_data)
-            logger.info("🎯 All ML models trained successfully")
+            logger.info(" All ML models trained successfully")
         except Exception as e:
             logger.error(f"ML training failed: {e}")
 
     async def _generate_training_data(self, duration_minutes: int) -> Dict:
         """Generate comprehensive training data."""
-        logger.info("📊 Generating ENHANCED training data...")
+        logger.info(" Generating training data...")
 
         expected_ticks = self.market_generator.target_ticks_per_minute * duration_minutes
-        logger.info(f"🎯 Target: {expected_ticks:,} ticks in {duration_minutes} minutes")
+        logger.info(f" Target: {expected_ticks:,} ticks in {duration_minutes} minutes")
 
         training_data = {
             "market_ticks": [],
@@ -188,7 +188,7 @@ class TrainingManager:
 
     async def _train_latency_models(self, training_data: Dict) -> None:
         """Train latency prediction models."""
-        logger.info("🔮 Training latency prediction models...")
+        logger.info(" Training latency prediction models...")
 
         try:
             for venue in self.venues:
@@ -206,37 +206,37 @@ class TrainingManager:
                             epochs=self.config["epochs"],
                             batch_size=self.config["batch_size"],
                         )
-                        logger.info(f"✅ {venue} LSTM: {metrics.get('accuracy', 0):.1f}% accuracy")
+                        logger.info(f" {venue} LSTM: {metrics.get('accuracy', 0):.1f}% accuracy")
                     elif hasattr(self.latency_predictor, "fit"):
                         self.latency_predictor.fit(features, targets)
-                        logger.info(f"✅ {venue} latency model trained")
+                        logger.info(f" {venue} latency model trained")
 
             if hasattr(self.ensemble_model, "train_all_models"):
                 self.ensemble_model.train_all_models(
                     training_data, epochs=self.config["epochs"] // 2
                 )
-                logger.info("✅ Ensemble models trained successfully")
+                logger.info(" Ensemble models trained successfully")
 
         except Exception as e:
             logger.error(f"Latency model training failed: {e}")
 
     async def _train_routing_models(self) -> None:
         """Train RL routing models."""
-        logger.info("🎯 Training routing optimization models...")
+        logger.info(" Training routing optimization models...")
 
         try:
             if hasattr(self.routing_environment, "train_agents"):
                 logger.info(f"Training DQN router ({self.config['routing_episodes']} episodes)...")
                 self.routing_environment.train_agents(episodes=self.config["routing_episodes"])
-                logger.info("✅ DQN router trained successfully")
+                logger.info(" DQN router trained successfully")
 
-            logger.info("✅ Routing models trained")
+            logger.info(" Routing models trained")
         except Exception as e:
             logger.error(f"Routing model training failed: {e}")
 
     async def _train_regime_detection(self, training_data: Dict) -> None:
         """Train market regime detection."""
-        logger.info("📈 Training market regime detection...")
+        logger.info(" Training market regime detection...")
 
         try:
             market_features = []
@@ -268,6 +268,6 @@ class TrainingManager:
 
                     self.market_regime_detector.train(market_windows)
 
-            logger.info("✅ Regime detection trained")
+            logger.info(" Regime detection trained")
         except Exception as e:
             logger.error(f"Regime detection training failed: {e}")

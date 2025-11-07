@@ -50,16 +50,23 @@ class ProductionLogger:
     def _update_level(self):
         """Update logger level based on verbosity."""
         level_map = {
-            LogLevel.QUIET: logging.ERROR,
-            LogLevel.NORMAL: logging.INFO,
-            LogLevel.VERBOSE: logging.INFO,
-            LogLevel.DEBUG: logging.DEBUG,
+            LogLevel.QUIET: logging.WARNING,  # Only warnings and errors
+            LogLevel.NORMAL: logging.INFO,     # Info and above
+            LogLevel.VERBOSE: logging.DEBUG,   # Debug and above
+            LogLevel.DEBUG: logging.DEBUG,     # All logging
         }
         self.logger.setLevel(level_map[self._level])
+
+        # Also set root logger to prevent other loggers from bypassing
+        logging.getLogger().setLevel(level_map[self._level])
 
     def should_log_verbose(self) -> bool:
         """Check if verbose logging enabled."""
         return self._level in (LogLevel.VERBOSE, LogLevel.DEBUG)
+
+    def should_log_debug(self) -> bool:
+        """Check if debug logging enabled."""
+        return self._level == LogLevel.DEBUG
 
     def info(self, msg: str, **kwargs):
         """Log info message."""
