@@ -9,6 +9,10 @@ import pandas as pd
 from collections import deque
 from typing import Dict, List, Tuple, Optional, Any
 from dataclasses import dataclass
+import logging
+
+logger = logging.getLogger(__name__)
+
 # import talib  # Optional - using custom implementations instead
 # from scipy import stats  # Not needed - using numpy instead
 import warnings
@@ -51,8 +55,8 @@ class AdvancedTechnicalEngine:
             } for symbol in ['AAPL', 'MSFT', 'GOOGL', 'TSLA', 'NVDA']  # Add more as needed
         }
         
-        print("🧮 Advanced Technical Indicators Engine initialized")
-        print(f"📊 Generating 50+ features for ML models")
+        logger.debug(" Advanced Technical Indicators Engine initialized")
+        logger.info(f" Generating 50+ features for ML models")
 
     def update_data(self, symbol: str, price: float, volume: int, 
                    high: float = None, low: float = None, 
@@ -168,7 +172,7 @@ class AdvancedTechnicalEngine:
             features['williams_r'] = self._calculate_williams_r(prices[-14:], prices[-14:], prices[-14:]) if len(prices) >= 14 else -50
             
         except Exception as e:
-            print(f"⚠️ Momentum calculation error: {e}")
+            logger.info(f"️ Momentum calculation error: {e}")
             features = {k: 0.0 for k in ['rsi_14', 'rsi_21', 'rsi_slope', 'macd', 'macd_signal', 
                                        'macd_histogram', 'macd_divergence', 'roc_1', 'roc_5', 'roc_10',
                                        'momentum_10', 'momentum_20', 'williams_r']}
@@ -207,7 +211,7 @@ class AdvancedTechnicalEngine:
             features['volatility_breakout'] = 1 if features['volatility_10'] > features['volatility_20'] * 1.5 else 0
             
         except Exception as e:
-            print(f"⚠️ Volatility calculation error: {e}")
+            logger.info(f"️ Volatility calculation error: {e}")
             features = {k: 0.0 for k in ['bb_upper', 'bb_lower', 'bb_width', 'bb_position', 
                                        'atr_14', 'atr_21', 'volatility_10', 'volatility_20',
                                        'keltner_upper', 'keltner_lower', 'keltner_position', 'volatility_breakout']}
@@ -244,7 +248,7 @@ class AdvancedTechnicalEngine:
             features['vwap_deviation'] = (prices[-1] - vwap) / vwap * 100
             
         except Exception as e:
-            print(f"⚠️ Volume calculation error: {e}")
+            logger.info(f"️ Volume calculation error: {e}")
             features = {k: 0.0 for k in ['volume_sma_10', 'volume_sma_20', 'volume_ratio_short', 
                                        'volume_ratio_long', 'obv', 'vpt', 'pvt', 'volume_breakout', 'vwap_deviation']}
         
@@ -282,7 +286,7 @@ class AdvancedTechnicalEngine:
             features['overextended'] = 1 if abs(features['deviation_sma_20']) > 5 else 0
             
         except Exception as e:
-            print(f"⚠️ Mean reversion calculation error: {e}")
+            logger.info(f"️ Mean reversion calculation error: {e}")
             features = {k: 0.0 for k in ['deviation_sma_10', 'deviation_sma_20', 'deviation_sma_50',
                                        'deviation_ema_12', 'deviation_ema_26', 'z_score_10', 'z_score_20',
                                        'mean_reversion_signal', 'overextended']}
@@ -324,7 +328,7 @@ class AdvancedTechnicalEngine:
                 features.update({'return_volatility': 0, 'return_autocorr': 0})
                 
         except Exception as e:
-            print(f"⚠️ Microstructure calculation error: {e}")
+            logger.info(f"️ Microstructure calculation error: {e}")
             features = {k: 0.0 for k in ['avg_spread', 'spread_volatility', 'spread_trend',
                                        'avg_trade_size', 'trade_size_volatility', 'large_trade_ratio',
                                        'return_volatility', 'return_autocorr']}
@@ -659,7 +663,7 @@ if __name__ == "__main__":
     test_symbol = "AAPL"
     base_price = 150.0
     
-    print("🧪 Testing Advanced Technical Indicators...")
+    logger.info(" Testing Advanced Technical Indicators...")
     
     for i in range(50):
         price = base_price + np.random.normal(0, 1)
@@ -678,14 +682,14 @@ if __name__ == "__main__":
     # Get full analysis
     result = engine.calculate_all_indicators(test_symbol, time.time())
     
-    print(f"\n📊 Analysis Results for {test_symbol}:")
-    print(f"Market Regime: {result.market_regime}")
-    print(f"Volatility Regime: {result.volatility_regime}")
-    print(f"Liquidity Score: {result.liquidity_score:.1f}")
-    print(f"Indicators Generated: {len(result.indicators)}")
-    print(f"Microstructure Features: {len(result.microstructure_features)}")
+    logger.info(f"\n Analysis Results for {test_symbol}:")
+    logger.info(f"Market Regime: {result.market_regime}")
+    logger.info(f"Volatility Regime: {result.volatility_regime}")
+    logger.info(f"Liquidity Score: {result.liquidity_score:.1f}")
+    logger.info(f"Indicators Generated: {len(result.indicators)}")
+    logger.info(f"Microstructure Features: {len(result.microstructure_features)}")
     
     # Show ML feature vector
     ml_features = engine.get_ml_feature_vector(test_symbol, time.time())
-    print(f"ML Feature Vector Length: {len(ml_features)}")
-    print("✅ Technical Indicators Engine Test Complete!")
+    logger.info(f"ML Feature Vector Length: {len(ml_features)}")
+    logger.info(" Technical Indicators Engine Test Complete!")

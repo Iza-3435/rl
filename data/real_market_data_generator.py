@@ -7,6 +7,10 @@ from collections import deque
 from dataclasses import dataclass
 from typing import Optional
 from typing import List, Dict, Optional, Any, Tuple
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 # ADD THIS AFTER YOUR IMPORTS (around line 30)
 EXPANDED_STOCK_LIST = [
@@ -137,9 +141,9 @@ class EnhancedTickGenerator:
         self.latency_history = {venue: deque(maxlen=100) for venue in self.tick_multipliers.keys()}
         self.congestion_events = []
         
-        print("🔧 Enhanced Tick Generator initialized with multipliers:")
+        logger.debug(" Enhanced Tick Generator initialized with multipliers:")
         for symbol, multiplier in self.tick_multipliers.items():
-            print(f"   {symbol}: {multiplier}x")
+            logger.info(f"   {symbol}: {multiplier}x")
 
     def get_update_interval(self, symbol):
         """Get update interval for specific symbol"""
@@ -226,15 +230,15 @@ class EnhancedTickGenerator:
         return [symbol for symbol, _ in priorities[:max_symbols]]
 
 class UltraRealisticMarketDataGenerator:
-    """The most realistic market data generator possible - ENHANCED VERSION"""
+    """The most realistic market data generator possible - VERSION"""
 
     def __init__(self, symbols: List[str] = None, mode: str = 'balanced'):
         if symbols is None:
             symbols = EXPANDED_STOCK_LIST
         elif len(symbols) < 5:
-            print(f"⚠️  Only {len(symbols)} symbols provided. Consider using more!")
+            logger.info(f"️  Only {len(symbols)} symbols provided. Consider using more!")
         
-        # 🔧 ADD #3: INITIALIZE ENHANCED TICK GENERATOR (ADD TO __init__)
+        #  ADD #3: INITIALIZE TICK GENERATOR (ADD TO __init__)
         self.enhanced_tick_gen = EnhancedTickGenerator()
         self.mode = mode
         
@@ -247,16 +251,16 @@ class UltraRealisticMarketDataGenerator:
         # if len(symbols) > tick_config['recommended_symbols']:
         #     priority_symbols = self.enhanced_tick_gen.generate_symbol_priorities(symbols, mode)
         #     self.symbols = priority_symbols
-        #     print(f"🎯 OPTIMIZED: Using top {len(self.symbols)} symbols for {mode} mode")
+        #     print(f" OPTIMIZED: Using top {len(self.symbols)} symbols for {mode} mode")
         # else:
         #     self.symbols = symbols
         # Force all symbols regardless of mode
         self.symbols = symbols
-        print(f"🎯 FORCED: Using ALL {len(self.symbols)} symbols (ignoring {mode} mode limits)")
+        logger.info(f" FORCED: Using ALL {len(self.symbols)} symbols (ignoring {mode} mode limits)")
         
-        print(f"🚀 Enhanced Trading {len(self.symbols)} symbols: {', '.join(self.symbols[:5])}{'...' if len(self.symbols) > 5 else ''}")
-        print(f"📊 Target tick rate: {self.target_ticks_per_minute} ticks/minute ({self.target_ticks_per_minute/60:.1f}/sec)")
-        print(f"⏱️  Base update interval: {self.base_update_interval:.2f} seconds")
+        logger.debug(f" Enhanced Trading {len(self.symbols)} symbols: {', '.join(self.symbols[:5])}{'...' if len(self.symbols) > 5 else ''}")
+        logger.debug(f" Target tick rate: {self.target_ticks_per_minute} ticks/minute ({self.target_ticks_per_minute/60:.1f}/sec)")
+        logger.debug(f"⏱️  Base update interval: {self.base_update_interval:.2f} seconds")
 
         # Your existing initialization code continues...
         self.real_venues = {
@@ -272,9 +276,9 @@ class UltraRealisticMarketDataGenerator:
         self.current_prices = {}
         self.market_hours_cache = {}
         
-        print("🌟 ENHANCED Market Data Generator initialized")
-        print(f"📊 Symbols: {self.symbols}")
-        print(f"🏛️  Real venues: {list(self.real_venues.keys())}")
+        logger.debug(" Market Data Generator initialized")
+        logger.info(f" Symbols: {self.symbols}")
+        logger.debug(f"️  Real venues: {list(self.real_venues.keys())}")
 
     def _get_time_of_day_factors(self, current_time: datetime) -> Dict[str, float]:
         """Apply realistic time-of-day effects to market data"""
@@ -419,7 +423,7 @@ class UltraRealisticMarketDataGenerator:
                     liquidity_tier = "low"
                     base_size = 500
                 
-                print(f"📊 ULTRA-REAL {symbol}: ${current_price:.2f} "
+                # print(f" ULTRA-REAL {symbol}: ${current_price:.2f} "
                       f"spread:${real_spread_dollars:.3f} "
                       f"change:{day_change:.2%} "
                       f"liquidity:{liquidity_tier}")
@@ -467,7 +471,7 @@ class UltraRealisticMarketDataGenerator:
                     self.current_prices[symbol] = current_price
                 
             except Exception as e:
-                print(f"❌ Error fetching ultra-real data for {symbol}: {e}")
+                logger.info(f" Error fetching ultra-real data for {symbol}: {e}")
         
         return ultra_real_ticks
     
@@ -549,18 +553,18 @@ class UltraRealisticMarketDataGenerator:
                         self.arbitrage_opportunities.append(opportunity)
                         opportunities_found += 1
                         
-                        print(f"🎯 ULTRA-REAL ARBITRAGE: {symbol} "
+                        # print(f" ULTRA-REAL ARBITRAGE: {symbol} "
                               f"buy@{buy_tick.venue}:{buy_tick.ask_price:.2f} "
                               f"sell@{sell_tick.venue}:{sell_tick.bid_price:.2f} "
                               f"net_profit:${net_profit:.3f}")
         
         if opportunities_found == 0:
-            print("📊 No arbitrage opportunities found this round")
+            logger.debug(" No arbitrage opportunities found this round")
     
     async def generate_market_data_stream(self, duration_seconds=60):
         """Enhanced stream with symbol-specific update frequencies"""
-        print(f"🚀 Starting ENHANCED market data stream for {duration_seconds}s")
-        print(f"📊 Mode: {self.mode} | Target: {self.target_ticks_per_minute} ticks/min")
+        logger.debug(f" Starting market data stream for {duration_seconds}s")
+        logger.info(f" Mode: {self.mode} | Target: {self.target_ticks_per_minute} ticks/min")
         
         end_time = time.time() + duration_seconds
         last_updates = {symbol: 0 for symbol in self.symbols}
@@ -580,7 +584,7 @@ class UltraRealisticMarketDataGenerator:
                 
                 if symbols_to_update:
                     current_time_str = datetime.now().strftime('%H:%M:%S')
-                    print(f"📡 [{current_time_str}] Updating {len(symbols_to_update)} symbols: {symbols_to_update}")
+                    logger.debug(f" [{current_time_str}] Updating {len(symbols_to_update)} symbols: {symbols_to_update}")
                     
                     # Generate ticks for selected symbols
                     ultra_real_ticks = await self.get_ultra_realistic_data_for_symbols(symbols_to_update)
@@ -612,24 +616,24 @@ class UltraRealisticMarketDataGenerator:
                     await asyncio.sleep(0.5)
                 
             except Exception as e:
-                print(f"❌ Error in enhanced stream: {e}")
+                logger.info(f" Error in enhanced stream: {e}")
                 await asyncio.sleep(1)
         
         # Final statistics
         total_ticks = sum(tick_count_by_symbol.values())
         actual_rate = total_ticks / (duration_seconds / 60) if duration_seconds > 0 else 0
         
-        print(f"🏁 Enhanced stream complete!")
-        print(f"📊 Total ticks: {total_ticks} | Target: {self.target_ticks_per_minute * (duration_seconds/60):.0f}")
-        print(f"📈 Actual rate: {actual_rate:.1f} ticks/min | Target: {self.target_ticks_per_minute}")
-        print(f"🎯 Rate efficiency: {(actual_rate/self.target_ticks_per_minute)*100:.1f}%")
-        print(f"💎 Arbitrage opportunities: {len(self.arbitrage_opportunities)}")
+        logger.debug(f" Enhanced stream complete!")
+        logger.debug(f" Total ticks: {total_ticks} | Target: {self.target_ticks_per_minute * (duration_seconds/60):.0f}")
+        logger.debug(f" Actual rate: {actual_rate:.1f} ticks/min | Target: {self.target_ticks_per_minute}")
+        logger.debug(f" Rate efficiency: {(actual_rate/self.target_ticks_per_minute)*100:.1f}%")
+        logger.info(f" Arbitrage opportunities: {len(self.arbitrage_opportunities)}")
         
         # Show per-symbol breakdown
-        print("📋 Per-symbol tick counts:")
+        logger.debug(" Per-symbol tick counts:")
         for symbol, count in sorted(tick_count_by_symbol.items(), key=lambda x: x[1], reverse=True):
             multiplier = self.enhanced_tick_gen.tick_multipliers.get(symbol, 3)
-            print(f"   {symbol}: {count} ticks (priority: {multiplier}x)")
+            logger.info(f"   {symbol}: {count} ticks (priority: {multiplier}x)")
 
     async def get_ultra_realistic_data_for_symbols(self, symbols_to_update):
         """Get realistic data for specific symbols only - ULTRA-REAL FORMAT"""
@@ -707,8 +711,8 @@ class UltraRealisticMarketDataGenerator:
                     liquidity_tier = "low"
                     base_size = 500
                 
-                # ✅ KEEP THE ULTRA-REAL FORMAT:
-                print(f"📊 REAL {symbol}: ${current_price:.2f} "
+                #  KEEP THE ULTRA-REAL FORMAT:
+                # print(f" REAL {symbol}: ${current_price:.2f} "
                     f"spread:${final_spread_dollars:.3f} "
                     f"change:{day_change:.2%} "
                     f"liquidity:{liquidity_tier}")
@@ -756,13 +760,13 @@ class UltraRealisticMarketDataGenerator:
                     self.current_prices[symbol] = current_price
                     
             except Exception as e:
-                print(f"❌ Error fetching ultra-real data for {symbol}: {e}")
+                logger.info(f" Error fetching ultra-real data for {symbol}: {e}")
         
         return ultra_real_ticks
         
     async def initialize_historical_calibration(self):
             """Initialize with real market analysis"""
-            print("📊 Performing real market analysis...")
+            logger.info(" Performing real market analysis...")
             
             for symbol in self.symbols:
                 try:
@@ -774,13 +778,13 @@ class UltraRealisticMarketDataGenerator:
                         volatility = hist['Close'].pct_change().std() * np.sqrt(252)
                         avg_volume = hist['Volume'].mean()
                         
-                        print(f"✅ {symbol}: {volatility:.1%} annual volatility, "
+                        print(f" {symbol}: {volatility:.1%} annual volatility, "
                             f"{avg_volume:,.0f} avg daily volume")
                     
                 except Exception as e:
-                    print(f"⚠️  Could not calibrate {symbol}: {e}")
+                    logger.info(f"️  Could not calibrate {symbol}: {e}")
             
-            print("✅ Real market calibration complete")
+            logger.info(" Real market calibration complete")
     
     def get_performance_metrics(self):
         """Ultra-realistic performance metrics"""

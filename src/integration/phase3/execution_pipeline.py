@@ -87,7 +87,7 @@ class ProductionExecutionPipeline:
 
                     self._last_arb_trade_time = tick.timestamp
                     logger.info(
-                        f"🎯 MULTI-STOCK ARBITRAGE: {arb_opp['symbol']} profit=${arb_opp['profit_per_share']:.3f}"
+                        f" MULTI-STOCK ARBITRAGE: {arb_opp['symbol']} profit=${arb_opp['profit_per_share']:.3f}"
                     )
                     return signals
 
@@ -194,7 +194,7 @@ class ProductionExecutionPipeline:
 
             self._last_trade_times[symbol] = tick.timestamp
             logger.info(
-                f"📈 {symbol} signal: expected_pnl=${expected_pnl:.2f} (type: {self._classify_stock_type(symbol)})"
+                f" {symbol} signal: expected_pnl=${expected_pnl:.2f} (type: {self._classify_stock_type(symbol)})"
             )
 
         return signals
