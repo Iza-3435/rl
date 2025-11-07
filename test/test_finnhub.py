@@ -26,5 +26,6 @@ def test_finnhub_connection(api_key):
         return False
 
 if __name__ == "__main__":
-    API_KEY = "d253t4pr01qns40d1v00d253t4pr01qns40d1v0g"  # Replace with your key
+    API_KEY = "d253t4pr01qns40d1v00d253t4pr01qns40d1v0g"  
+    
     test_finnhub_connection(API_KEY)

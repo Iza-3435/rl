@@ -1289,7 +1289,7 @@ class BacktestExecutionSimulator:
         self.fill_id_counter = 0
         
     async def simulate_execution(self, order: Order, market_data: pd.Series, 
-                               ml_predictions: Dict) -> Optional[Fill]:
+                               ml_predictions: Dict) -> Optional['Fill']:
         """Simulate order execution with realistic assumptions"""
         # Determine if order would fill
         fill_probability = self._calculate_fill_probability(order, market_data)

@@ -9,6 +9,10 @@ import numpy as np
 from collections import defaultdict, deque
 from enum import Enum
 import json
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from simulator.trading_simulator import Fill
 
 logger = logging.getLogger(__name__)
 
