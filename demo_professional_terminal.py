@@ -64,6 +64,9 @@ async def main():
         # Random delay between trades
         await asyncio.sleep(random.uniform(0.1, 0.5))
 
+    # Close table
+    trade_logger.print_footer()
+
     # Show summary
     stats = trade_logger.get_summary_stats()
     print(
