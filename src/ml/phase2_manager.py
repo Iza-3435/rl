@@ -37,12 +37,11 @@ class Phase2Manager:
     async def _init_prediction_models(self):
         """Initialize latency prediction models."""
         try:
-            from data.latency_predictor import LatencyPredictor
-            from models.ensemble_latency_model import EnsembleLatencyModel
+            from src.ml.predictors.latency_predictor import ProductionLatencyPredictor
 
             venue_list = list(self.venues.keys())
-            self.latency_predictor = LatencyPredictor(venue_list)
-            self.ensemble_model = EnsembleLatencyModel(venue_list)
+            self.latency_predictor = ProductionLatencyPredictor(venue_list)
+            self.ensemble_model = None
 
             self._configure_model_params()
             logger.verbose("Latency prediction models initialized")
@@ -69,15 +68,15 @@ class Phase2Manager:
 
     async def _init_routing(self, phase1_components: dict):
         """Initialize RL routing environment."""
-        from models.rl_route_optimizer import RoutingEnvironment
+        from src.ml.routing.route_optimizer import ProductionRouteOptimizer
 
-        self.routing_environment = RoutingEnvironment(
-            self.latency_predictor,
-            phase1_components["market_generator"],
-            phase1_components["network_simulator"],
-            phase1_components["order_book_manager"],
-            phase1_components["feature_extractor"],
-            venue_list=list(self.venues.keys()),
+        self.routing_environment = ProductionRouteOptimizer(
+            venues=list(self.venues.keys()),
+            latency_predictor=self.latency_predictor,
+            market_generator=phase1_components["market_generator"],
+            network_simulator=phase1_components["network_simulator"],
+            order_book_manager=phase1_components["order_book_manager"],
+            feature_extractor=phase1_components["feature_extractor"],
         )
         logger.verbose("Routing environment initialized")
 

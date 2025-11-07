@@ -41,16 +41,14 @@ class Phase1Manager:
 
     async def _init_market_data(self):
         """Initialize market data generator."""
-        from data.real_market_data_generator import UltraRealisticMarketDataGenerator
+        from src.data_layer.market_data import ProductionMarketDataGenerator
 
-        self.market_generator = UltraRealisticMarketDataGenerator(self.symbols, mode=self.mode)
-        self.market_generator.venues = self.venues
+        self.market_generator = ProductionMarketDataGenerator(
+            symbols=self.symbols, venues=self.venues, mode=self.mode
+        )
 
         logger.verbose(
-            "Market data generator initialized",
-            symbols=len(self.symbols),
-            mode=self.mode,
-            tick_rate=self.market_generator.target_ticks_per_minute,
+            "Market data generator initialized", symbols=len(self.symbols), mode=self.mode
         )
 
     async def _init_network(self):
@@ -69,9 +67,9 @@ class Phase1Manager:
 
     async def _init_features(self):
         """Initialize feature extractor."""
-        from data.feature_extractor import FeatureExtractor
+        from src.data_layer.feature_extractor import ProductionFeatureExtractor
 
-        self.feature_extractor = FeatureExtractor(self.symbols, self.venues)
+        self.feature_extractor = ProductionFeatureExtractor(self.symbols, self.venues)
         logger.verbose("Feature extractor initialized")
 
     async def _init_tracking(self):
