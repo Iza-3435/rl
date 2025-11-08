@@ -424,9 +424,9 @@ class UltraRealisticMarketDataGenerator:
                     base_size = 500
                 
                 # print(f" ULTRA-REAL {symbol}: ${current_price:.2f} "
-                      f"spread:${real_spread_dollars:.3f} "
-                      f"change:{day_change:.2%} "
-                      f"liquidity:{liquidity_tier}")
+                #       f"spread:${real_spread_dollars:.3f} "
+                #       f"change:{day_change:.2%} "
+                #       f"liquidity:{liquidity_tier}")
                 
                 # Create ultra-realistic ticks for each venue
                 for i, (venue, venue_info) in enumerate(self.real_venues.items()):
@@ -554,9 +554,9 @@ class UltraRealisticMarketDataGenerator:
                         opportunities_found += 1
                         
                         # print(f" ULTRA-REAL ARBITRAGE: {symbol} "
-                              f"buy@{buy_tick.venue}:{buy_tick.ask_price:.2f} "
-                              f"sell@{sell_tick.venue}:{sell_tick.bid_price:.2f} "
-                              f"net_profit:${net_profit:.3f}")
+                        #       f"buy@{buy_tick.venue}:{buy_tick.ask_price:.2f} "
+                        #       f"sell@{sell_tick.venue}:{sell_tick.bid_price:.2f} "
+                        #       f"net_profit:${net_profit:.3f}")
         
         if opportunities_found == 0:
             logger.debug(" No arbitrage opportunities found this round")
@@ -713,9 +713,9 @@ class UltraRealisticMarketDataGenerator:
                 
                 #  KEEP THE ULTRA-REAL FORMAT:
                 # print(f" REAL {symbol}: ${current_price:.2f} "
-                    f"spread:${final_spread_dollars:.3f} "
-                    f"change:{day_change:.2%} "
-                    f"liquidity:{liquidity_tier}")
+                #       f"spread:${final_spread_dollars:.3f} "
+                #       f"change:{day_change:.2%} "
+                #       f"liquidity:{liquidity_tier}")
                 
                 # Create ultra-realistic ticks for each venue
                 for i, (venue, venue_info) in enumerate(self.real_venues.items()):

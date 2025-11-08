@@ -25,9 +25,9 @@ class RealNetworkLatencySimulator:
         self.latency_history = {venue: deque(maxlen=20) for venue in self.exchange_endpoints}
         self.congestion_events = deque(maxlen=50)
         self.last_measurements = {}
-        
-        print("🌐 Real Network Latency System initialized")
-        print(f"📡 Monitoring: {list(self.exchange_endpoints.keys())}")
+
+        print("[*] Real Network Latency System initialized")
+        print(f"[*] Monitoring: {list(self.exchange_endpoints.keys())}")
     
     def measure_latency(self, venue, timestamp):
         """Measure REAL latency to actual exchanges"""

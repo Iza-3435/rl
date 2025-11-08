@@ -1,3 +1,4 @@
+
 """Main orchestrator for production HFT system."""
 
 import time
@@ -115,32 +116,55 @@ class HFTSystemOrchestrator:
         )
         logger.verbose("Execution pipeline created")
 
-    async def run(self, duration_seconds: int = 600):
+    async def train_models(self, training_duration: int = 120):
+        """Train ML models with generated data."""
+        if self.state != "ready":
+            raise RuntimeError(f"System not ready: {self.state}")
+
+        logger.info(f"Training ML models with {training_duration}s of data")
+
+        if self.phase1.market_generator:
+            self.phase1.market_generator.start()
+
+        await self.phase2.train_models(training_duration)
+
+        if self.phase1.market_generator:
+            self.phase1.market_generator.stop()
+
+        logger.info("ML models trained successfully")
+
+    async def run(self, duration_seconds: int = 600, skip_training: bool = False):
         """Run production trading."""
         if self.state != "ready":
             raise RuntimeError(f"System not ready: {self.state}")
 
         self.duration_seconds = duration_seconds
 
+        if not skip_training:
+            mode = self.config.system.mode.value
+            training_time = 30 if mode == "fast" else (120 if mode == "balanced" else 300)
+            await self.train_models(training_time)
+
+        if self.phase1 and self.phase1.market_generator:
+            self.phase1.market_generator.start()
+
         start_time = datetime.now()
         await self.pipeline.start(duration_seconds)
         elapsed = (datetime.now() - start_time).total_seconds()
 
-        # Get metrics and show summary
+        if self.phase1 and self.phase1.market_generator:
+            self.phase1.market_generator.stop()
+
         metrics = self.pipeline.get_metrics()
-        trade_stats = self.trade_logger.get_summary_stats()
 
         if logger._level != LogLevel.QUIET:
-            # Close trade table if header was printed
-            self.trade_logger.print_footer()
-
-            # Show summary
+            win_rate = (self.formatter.win_count / self.pipeline.trade_count * 100) if self.pipeline.trade_count > 0 else 0
             print(
                 self.formatter.summary(
                     duration=elapsed,
-                    trades=trade_stats["trade_count"],
-                    total_pnl=trade_stats["total_pnl"],
-                    win_rate=trade_stats["win_rate"],
+                    trades=self.pipeline.trade_count,
+                    total_pnl=self.pipeline.total_pnl,
+                    win_rate=win_rate,
                     sharpe=metrics.get("sharpe_ratio"),
                     max_dd=metrics.get("max_drawdown"),
                 )

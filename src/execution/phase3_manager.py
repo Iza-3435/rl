@@ -60,9 +60,9 @@ class Phase3Manager:
 
     async def _init_risk_management(self):
         """Initialize risk management system."""
-        from src.risk.risk_manager import ProductionRiskManager
+        from src.risk.risk_manager import RiskManager
 
-        self.risk_manager = ProductionRiskManager()
+        self.risk_manager = RiskManager()
         self.pnl_attribution = None
 
         logger.verbose("Risk management initialized")

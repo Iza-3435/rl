@@ -69,8 +69,17 @@ models/saved/
 reports/
 backtest_results/
 *_report_*.json
+*_report_*.html
 complete_backtest_data_*.json
 latency_model_*.pt
+historical_backtest_*.html
+monte_carlo_analysis_*.html
+stress_test_report_*.html
+
+# Demo files
+demo_*.py
+quick_demo.py
+test_animated_progress.py
 
 # Secrets
 .env
@@ -89,3 +98,6 @@ grafana_data/
 tmp/
 temp/
 *.tmp
+
+# Archive folder (local only - old code/docs)
+.archive/
