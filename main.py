@@ -60,6 +60,9 @@ async def main():
         if args.symbols:
             config.trading.symbols = args.symbols.split(",")
 
+        from src.core.types import TradingMode
+        config.system.mode = TradingMode[args.mode.upper()]
+
         orchestrator = HFTSystemOrchestrator(config)
         await orchestrator.initialize()
 

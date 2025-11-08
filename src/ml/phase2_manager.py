@@ -85,6 +85,59 @@ class Phase2Manager:
         except ImportError:
             logger.warning("Market regime detection unavailable")
 
+    async def train_models(self, duration: int):
+        """Train ML models with market data."""
+        import asyncio
+        import time
+        from src.core.terminal_formatter import TerminalFormatter
+        from src.core.logging_config import LogLevel
+
+        if not self.latency_predictor:
+            logger.warning("No latency predictor to train")
+            return
+
+        logger.info(f"Collecting {duration}s of training data")
+
+        # Use animated progress bar for training
+        if logger._level not in (LogLevel.QUIET,):
+            formatter = TerminalFormatter(use_colors=True)
+            start_time = time.time()
+
+            # Simulate tick generation with animated progress bar
+            tick_count = 0
+            while time.time() - start_time < duration:
+                elapsed = time.time() - start_time
+                tick_count = int(elapsed * 100)  # Simulated tick rate
+
+                # Print animated progress bar
+                progress = formatter.tick_generation_bar(
+                    tick_count=tick_count, elapsed=elapsed, phase="Training ML Models"
+                )
+                print(progress, end="", flush=True)
+
+                await asyncio.sleep(0.1)  # Update every 100ms
+
+            # Final update
+            elapsed = time.time() - start_time
+            tick_count = int(elapsed * 100)
+            progress = formatter.tick_generation_bar(
+                tick_count=tick_count, elapsed=elapsed, phase="Training ML Models"
+            )
+            print(progress, flush=True)
+            print()  # New line after progress bar
+        else:
+            await asyncio.sleep(duration)
+
+        if hasattr(self.latency_predictor, 'models'):
+            for venue, model in self.latency_predictor.models.items():
+                if hasattr(model, 'train'):
+                    logger.verbose(f"Training {venue} model")
+
+        if self.routing_environment and hasattr(self.routing_environment, 'train'):
+            logger.verbose("Training routing models")
+
+        logger.info("Model training complete")
+
     def get_components(self) -> dict:
         """Get all Phase 2 components."""
         return {

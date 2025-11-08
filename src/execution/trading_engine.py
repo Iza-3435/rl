@@ -25,6 +25,10 @@ class ProductionTradingEngine:
             },
         )
 
+        # Expose execution_engine for cost model integration
+        if hasattr(self._simulator, 'execution_engine'):
+            self.execution_engine = self._simulator.execution_engine
+
         logger.verbose("Trading engine initialized", symbols=len(symbols), venues=len(venues))
 
     async def execute(self, order: OrderRequest) -> Optional[Trade]:
