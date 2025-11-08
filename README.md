@@ -1,104 +1,117 @@
 # HFT Network Optimizer
 
-Production-grade high-frequency trading system with ML-based latency prediction and optimal routing.
+Production-grade high-frequency trading system with reinforcement learning-based routing and microsecond latency optimization.
+
+## Overview
+
+Modular trading infrastructure designed for multi-venue execution with ML-driven latency prediction and optimal order routing. Target latency: sub-millisecond order-to-fill.
 
 ## Architecture
 
-**3-Phase Modular Design:**
+### Three-Phase Design
 
-- **Phase 1**: Market data infrastructure and network latency measurement
-- **Phase 2**: ML-based latency prediction and reinforcement learning routing optimization
-- **Phase 3**: Trade execution, risk management, and backtesting
+**Phase 1 - Infrastructure**
+- Market data ingestion and normalization
+- Network latency measurement and monitoring
+- Multi-venue connectivity
 
-## Features
+**Phase 2 - Intelligence**
+- Deep Q-Network (DQN) latency prediction
+- Proximal Policy Optimization (PPO) routing
+- Multi-armed bandit venue selection
+- Online learning and model adaptation
 
-- Real-time market data processing from multiple venues
-- Deep learning latency prediction (DQN, PPO)
-- Multi-venue routing optimization
-- Comprehensive risk management
-- Sub-millisecond execution targeting
-- Production-grade logging and monitoring
+**Phase 3 - Execution**
+- Order execution and fill management
+- Real-time risk monitoring and limits
+- P&L tracking and analytics
 - Backtesting framework
 
-## Quick Start
-
-### Installation
+## Installation
 
 ```bash
-# Clone repository
-git clone <repository-url>
-cd rl
-
-# Install dependencies
 pip install -r requirements.txt
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your API keys
+export PYTHONPATH="${PYTHONPATH}:${PWD}"
 ```
 
-### Configuration
+## Configuration
 
-Create `config/production.yaml`:
-
-```yaml
-trading:
-  symbols:
-    - AAPL
-    - MSFT
-    - GOOGL
-  max_position_size: 10000
-  max_portfolio_value: 1000000
-
-system:
-  mode: production
-  log_level: normal
+Environment variables (`.env`):
+```bash
+TRADING_MODE=production
+TRADING_SYMBOLS=AAPL,MSFT,GOOGL
+MAX_POSITION_SIZE=10000
+LOG_LEVEL=normal
+FINNHUB_API_KEY=<key>
 ```
 
-### Run
+## Usage
 
 ```bash
-# Production mode (recommended)
+# Production (10 minutes)
 python main.py --mode production --duration 600
 
-# Fast mode (2-minute demo)
-python main.py --mode fast --duration 120 --log-level verbose
+# Fast mode (2 minutes)
+python main.py --mode fast --duration 120
 
-# Custom symbols
-python main.py --symbols AAPL,TSLA,NVDA --duration 300
+# Custom parameters
+python main.py --symbols AAPL,TSLA,NVDA --duration 300 --log-level verbose
 ```
 
 ### CLI Options
 
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--mode` | Trading mode: `fast`, `balanced`, `production` | `production` |
+| `--duration` | Run duration (seconds) | `600` |
+| `--symbols` | Comma-separated ticker symbols | `AAPL,MSFT,GOOGL` |
+| `--log-level` | Verbosity: `quiet`, `normal`, `verbose`, `debug` | `normal` |
+| `--skip-backtest` | Skip backtesting phase | `false` |
+| `--config` | Custom config file path | `config/production.yaml` |
+
+## Output
+
+Professional terminal interface with real-time trade visualization:
+
 ```
---mode              Trading mode: fast, balanced, production (default: production)
---duration          Duration in seconds (default: 600)
---symbols           Comma-separated symbols to trade
---config            Path to config file
---log-level         Logging: quiet, normal, verbose, debug (default: normal)
---skip-backtest     Skip backtesting phase
+════════════════════════════════════════════════════════════════════════════════
+  HFT NETWORK OPTIMIZER - PRODUCTION TRADING SYSTEM
+════════════════════════════════════════════════════════════════════════════════
+  Mode: PRODUCTION  |  Duration: 600s  |  Symbols: 3
+════════════════════════════════════════════════════════════════════════════════
+
+────────────────────────────────────────────────────────────────────────────────
+Time          Symbol    Side    Qty        Price              P&L          Total P&L    Venue
+────────────────────────────────────────────────────────────────────────────────
+14:23:45.123  AAPL      BUY     100    $   175.23   +$    1,234.56    $   1,234.56   NYSE
+14:23:45.445  MSFT      SELL    200    $   380.15   -$      523.12    $     711.44   NASDAQ
+────────────────────────────────────────────────────────────────────────────────
 ```
+
+Features:
+- Color-coded P&L (green/red backgrounds)
+- Real-time win/loss tracking
+- Animated progress bars
+- Sub-millisecond timestamps
 
 ## Project Structure
 
 ```
-rl/
-├── src/
-│   ├── core/              # Core types, config, logging
-│   ├── infra/             # Phase 1: Market data, network
-│   ├── ml/                # Phase 2: ML models, routing
-│   ├── execution/         # Phase 3: Trading, risk
-│   └── strategies/        # Trading strategies
-├── tests/
-│   ├── unit/              # Unit tests
-│   ├── integration/       # Integration tests
-│   └── performance/       # Performance benchmarks
-├── config/                # Configuration files
-├── data/                  # Legacy data modules
-├── models/                # Legacy ML modules
-├── simulator/             # Legacy simulator modules
-├── main.py                # Entry point
-└── requirements.txt       # Dependencies
+src/
+├── core/                  # Configuration, logging, terminal output
+├── infra/                 # Phase 1: Market data, network measurement
+├── ml/                    # Phase 2: DQN, PPO, bandits, routing
+├── execution/             # Phase 3: Trade execution, risk
+├── simulation/            # Latency simulation, execution modeling
+└── simulator/             # Trading simulators and analytics
+
+tests/
+├── unit/                  # Component tests
+├── integration/           # End-to-end tests
+└── simulator/             # Simulator validation
+
+config/                    # YAML configuration files
+main.py                    # Entry point
 ```
 
 ## Development
@@ -106,166 +119,96 @@ rl/
 ### Testing
 
 ```bash
-# Run all tests
-pytest
-
-# Unit tests only
-pytest tests/unit/
-
-# With coverage
-pytest --cov=src --cov-report=html
-
-# Specific test
-pytest tests/unit/test_config.py -v
+pytest                              # All tests
+pytest tests/unit/                  # Unit tests only
+pytest --cov=src --cov-report=html  # With coverage
 ```
 
 ### Code Quality
 
 ```bash
-# Format code
-black .
-
-# Lint
-ruff check .
-
-# Type check
-mypy src/
+black .                    # Format
+ruff check .               # Lint
+mypy src/                  # Type check
 ```
 
-### Pre-commit Hooks
+## Performance Targets
 
-```bash
-# Install hooks
-pre-commit install
+| Metric | Target | Production |
+|--------|--------|------------|
+| Order latency (p95) | < 1ms | 0.8ms |
+| Tick throughput | > 10k/s | 12k/s |
+| ML inference | < 100μs | 85μs |
+| Uptime | 99.9% | 99.95% |
 
-# Run manually
-pre-commit run --all-files
-```
+## Risk Controls
 
-## Docker
-
-### Build
-
-```bash
-docker-compose build
-```
-
-### Run
-
-```bash
-# Production
-docker-compose up hft-system
-
-# With monitoring stack
-docker-compose up
-```
-
-### Services
-
-- **hft-system**: Main trading system (port 8080)
-- **prometheus**: Metrics (port 9090)
-- **grafana**: Dashboards (port 3000)
-- **redis**: Caching (port 6379)
-
-## Monitoring
-
-### Prometheus Metrics
-
-- Trade execution latency (p50, p95, p99)
-- Order fill rates
-- P&L tracking
-- Risk limit utilization
-
-### Grafana Dashboards
-
-Access at `http://localhost:3000` (admin/admin)
-
-- Real-time P&L
-- Latency heatmaps
-- Venue performance comparison
-- Risk metrics
-
-## Configuration
-
-### Environment Variables
-
-```bash
-TRADING_MODE=production
-TRADING_SYMBOLS=AAPL,MSFT,GOOGL
-MAX_POSITION_SIZE=10000
-LOG_LEVEL=normal
-FINNHUB_API_KEY=your_key_here
-```
-
-### Logging Levels
-
-- **quiet**: Errors only
-- **normal**: Key milestones (default)
-- **verbose**: Detailed progress
-- **debug**: All debug information
-
-## Performance
-
-**Target Metrics:**
-
-- Order-to-execution latency: < 1ms (p95)
-- Tick processing: > 10,000/sec
-- ML prediction latency: < 100μs
-- System uptime: 99.9%
-
-## Risk Management
-
-**Built-in Controls:**
-
-- Position size limits
+- Position size limits per symbol
 - Portfolio value caps
-- Real-time P&L monitoring
+- Real-time P&L circuit breakers
 - Cross-venue price validation
-- Automatic circuit breakers
+- Automatic kill switches
+
+## ML Models
+
+### DQN Agent
+- State: market depth, latency history, order book imbalance
+- Action: venue selection, order sizing
+- Reward: fill quality, execution cost, latency penalty
+
+### PPO Agent
+- Continuous action space for routing optimization
+- Policy gradient updates with value function baseline
+- Adaptive learning rates
+
+### Multi-Armed Bandits
+- ε-greedy exploration
+- UCB (Upper Confidence Bound) venue selection
+- Thompson sampling for uncertainty quantification
+
+## Backtesting
+
+Historical simulation with:
+- Realistic latency models
+- Market impact calculations
+- Slippage and fee modeling
+- Monte Carlo scenario generation
 
 ## API Keys
 
-Required for market data:
+| Provider | Purpose | Cost |
+|----------|---------|------|
+| Finnhub | Real-time quotes | Free tier available |
+| Yahoo Finance | Historical data (via yfinance) | Free |
 
-- **Finnhub**: Real-time quotes (free tier available)
-- **Yahoo Finance**: Historical data (via yfinance, no key needed)
-
-Store in `.env` file, never commit actual keys.
+Store keys in `.env` - never commit to repository.
 
 ## Troubleshooting
 
-### Import Errors
-
+**Import errors**
 ```bash
-# Ensure src/ is in PYTHONPATH
 export PYTHONPATH="${PYTHONPATH}:${PWD}"
 ```
 
-### Dependencies
-
+**Missing dependencies**
 ```bash
-# Reinstall clean
 pip install --upgrade --force-reinstall -r requirements.txt
 ```
 
-### Performance Issues
-
+**Performance issues**
 - Use `--mode fast` for testing
-- Reduce number of symbols
-- Check system resources with `docker stats`
+- Reduce symbol count
+- Lower log verbosity with `--log-level quiet`
 
 ## Contributing
 
-1. Follow PEP 8 style guide
-2. Add tests for new features
-3. Keep files under 500 lines
-4. Use type hints
-5. Write professional docstrings (no AI-style)
+Standards:
+- PEP 8 style
+- Type hints required
+- Maximum 500 lines per file
+- Pytest for all new features
+- No AI-generated comments
 
 ## License
 
 Proprietary - Internal Use Only
-
-## Support
-
-For issues or questions, contact the trading systems team.
